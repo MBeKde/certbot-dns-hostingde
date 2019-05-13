@@ -1,0 +1,8 @@
+.vscode/
+*.egg-info/
+logs/
+certs/
+
+*.pyc
+*.ini
+run.sh
