@@ -1,0 +1,5 @@
+.vscode
+certs
+logs
+*.ini
+run.sh
