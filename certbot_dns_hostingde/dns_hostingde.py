@@ -66,10 +66,10 @@ class _HostingLexiconClient(dns_common_lexicon.LexiconClient):
     Encapsulates all communication with the Hosting.de Infrastracture Service via Lexicon.
     """
 
-    def __init__(self, api_token, ttl):
+    def __init__(self, auth_token, ttl):
         super(_HostingLexiconClient, self).__init__()
 
-        config = dns_common_lexicon.build_lexicon_config('hosting', {
+        config = dns_common_lexicon.build_lexicon_config('hostingde', {
             'ttl': ttl,
         }, {
             'auth_token': auth_token,

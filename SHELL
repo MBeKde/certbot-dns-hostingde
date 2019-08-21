@@ -1,0 +1,1 @@
+docker run -ti --rm --entrypoint sh initit:certbot-hostingde 

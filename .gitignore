@@ -6,3 +6,4 @@ certs/
 *.pyc
 *.ini
 run.sh
+.secret
