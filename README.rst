@@ -1,0 +1,1 @@
+Hosting.de Infrastracture Service DNS Authenticator plugin for Certbot
