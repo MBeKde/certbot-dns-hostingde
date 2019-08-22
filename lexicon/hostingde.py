@@ -1,4 +1,4 @@
-"""Module provider for Hosting (Hosting.de)"""
+"""Module provider for hostingde (Hosting.de)"""
 from __future__ import absolute_import
 
 import json
@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 NAMESERVER_DOMAINS = ['hosting.de']
 
 # be aware to provide an auth_token
-# LEXICON_HOSTING_AUTH_TOKEN
+# LEXICON_HOSTINGDE_AUTH_TOKEN
 
 def provider_parser(subparser):
     """Return the parser for this provider"""
@@ -179,82 +179,77 @@ class Provider(BaseProvider):
 
         self._request(action='POST', url='/zoneUpdate', data=data)
 
-        # sometimes i takes some time to delete a record
-        # so, here check after deleting an loop
-        # if record is not delete after 10 retries > False
-        retries = 10
+        # sometimes it takes some time to delete a record
+        # so, here check after deleting and loop
+        # if record(s) is not deleted after 30 seconds > False
+        retries = 30
         for record_id in delete_record_ids:
-            loop = True
-            while loop:
-                rec = self._list_records(record_id)
-                if rec:
+            while True:
+                if self._list_records(record_id):
                     if retries < 1:
                         break
-                    else:
-                        retries = retries - 1
-                    time.sleep(3)
+                    retries = retries - 1
+                    time.sleep(1)
                 else:
                     break
 
         LOGGER.debug('delete_records: %s', retries > 0)
-
         return retries > 0
-    # Helpers
+
+
     def _request(self, action='GET', url='/', data=None, query_params=None):
         if data is None:
             data = {}
-
         data.update({
             "authToken": self._get_provider_option('auth_token')
             })
 
         read_page = 1
-        response_data = []
-        retries = 10
+        return_data = []
+        retries = 30
 
         # in some situatons, API uses pagination
-        # here we check an iof theres pagination, go to all pages
+        # here we check and if there is pagination, go through all pages
         while True:
-
             page_data = data
-            page_data.update({"page": read_page, "limit": 25})
+            page_data.update({"page": read_page})
 
             response = requests.request(action, self.api_endpoint + url,
                                         params=query_params,
                                         data=json.dumps(page_data),
                                         headers={'Content-Type': 'application/json'})
             response.raise_for_status()
-            response_json = response.json()
+            response_json = response.json()  # Work with json Object
             LOGGER.debug('_request response: %s', response_json)
-            status = response_json.get('status', '')
+            status = response_json.get('status', '*** no status available ***')
             # if API still busy just wait and retry
             if status == 'error' and\
                 response_json.get('errors')[0].get('value', '') == 'blocked':
                 if retries < 1:
-                    raise Exception('Api error: {0}'.format(response_json.get('errors', '')))
+                    raise Exception('Api error: {0}'.format(response_json.get('errors')))
                 retries = retries - 1
-                time.sleep(3)
+                time.sleep(1)
                 continue
 
             if status not in ('success', 'pending'):
-                raise Exception('Api error: {0}'.format(response_json.get('errors', '')))
+                raise Exception('Api error: {0}'.format(response_json.get('errors')))
             # check if there a data object
             read_data = response_json.get('response', {}).get('data', None)
 
-            # if no data objkect, check if theres a records object
+            # if no data object, check if there a records object
             if read_data is None:
                 read_data = response_json.get('response', {}).get('records', None)
 
             # add response data to return data
             if read_data:
-                response_data += read_data
+                return_data += read_data
 
             # is there pagination and more data available?
             total_pages = response_json.get('response', {}).get('totalPages', 0)
             if total_pages in (read_page, 0):
-                break
+                break  # no more data
 
             read_page = read_page + 1
 
-        return response_data
+        return return_data
  
