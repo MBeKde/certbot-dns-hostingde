@@ -22,7 +22,8 @@ docs_extras = [
 setup(
     name='certbot-dns-hostingde',
     version=version,
-    description="Hosting.de Infrastracture Service DNS Authenticator plugin for Certbot",
+    description="Hosting.de Infrastracture Service DNS Authenticator "
+                "plugin for Certbot",
     url='https://github.com/certbot/certbot',
     author="Michael Brückner",
     author_email='mbr@initit.de',
@@ -57,7 +58,7 @@ setup(
     },
     entry_points={
         'certbot.plugins': [
-            'dns-hostingde = certbot_dns_hostingde.dns_hostingde:Authenticator',
+            'dns-hostingde = certbot_dns_hostingde.dns_hostingde:Authenticator'
         ],
     },
     test_suite='certbot_dns_hostingde',
