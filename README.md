@@ -1,7 +1,9 @@
 # certbot-dns-hostingde
-certbos dns plugin for hosting.de
+certbot dns plugin for hosting.de
 
 This plugin automates the process of completing a ``dns-01`` challenge by creating, and subsequently removing, TXT records using the (JSON-based) hosting.de API.
+As of the time written ( August 2019) the pull request for the lexicon provider for hosting.de is not approved.
+Therefor you have to manual copy the lexicon provider (see `dockerfile`)
 
 Credentials
 -----------
@@ -9,7 +11,7 @@ Use of this plugin requires a configuration file containing hosting.de API key, 
 
 ```ini
 # hosting.de API Key used by Certbot
-certbot_dns_hostingde:dns_hostingde_token =  +9L$rHdwAAq34$sFmDdvfg54LoznAiJXDwj%+M7TmXZmWc+rJ
+certbot_dns_hostingde:dns_hostingde_auth_token =  +9L$rHdwAAq34$sFmDdvfg54LoznAiJXDwj%+M7TmXZmWc+rJ
 ```
 
 The path to this file can be provided interactively or using the `--certbot_dns_hostingde:dns-hostingde-credentials` command-line argument. Certbot records the path to this file for use during renewal, but does not store the file's contents.
